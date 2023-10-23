@@ -1,38 +1,81 @@
-#include <stdio.h>
-#include <pthread.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/10/23 20:57:26 by mklimina          #+#    #+#             */
+/*   Updated: 2023/10/23 23:44:52 by mklimina         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-# define NC	"\e[0m"
-# define YELLOW	"\e[1;33m"
+#include "philo.h"
+
 
 // thread_routine is the function the thread invokes right after its
 // creation. The thread ends at the end of this function.
-void	*thread_routine(void *data)
+// void	*routine(void *data)
+// {
+// 	pthread_t tid;
+// 	(void) data;
+// 	// The pthread_self() function provides
+// 	// this thread's own ID.
+// 	tid = pthread_self();
+// 	printf("%sThread [%ld]: The heaviest burden is to exist without living.%s\n",
+// 		YELLOW, tid, NC);
+// 	return (NULL); // The thread ends here.
+// }
+
+long int return_start_time(void)
 {
-	pthread_t tid;
-	(void) data;
-	// The pthread_self() function provides
-	// this thread's own ID.
-	tid = pthread_self();
-	printf("%sThread [%ld]: The heaviest burden is to exist without living.%s\n",
-		YELLOW, tid, NC);
-	return (NULL); // The thread ends here.
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
-
-int	main(void)
+t_data *init_data(char **argv, t_data *data, int argc)
 {
-	pthread_t	tid1;	// First thread's ID
-	pthread_t	tid2;	// Second thread's ID
+	int i;
+	i = 0;
+	data -> number_of_philosophers = ft_atoi(argv[1]);
+	data -> time_to_die= ft_atoi(argv[2]) ;
+	data -> time_to_eat = ft_atoi(argv[3]);
+	data -> time_to_sleep = ft_atoi(argv[4]);
+	if (argc == 6)
+		data -> nb_must_eat = ft_atoi(argv[5]);
+	data ->start_time = return_start_time();
+	data -> all_ate = 0;
+	data -> phi_died = 0;
+	pthread_mutex_init(&data -> write_mutex, NULL);
+	pthread_mutex_init(&data -> meal_mutex, NULL);
+	pthread_mutex_init(&data -> check_end_mutex, NULL);
+	/*
+	PHILO init 
+	*/
+	data -> philo = malloc(sizeof(t_philo *) * data -> number_of_philosophers);
 
-	pthread_create(&tid1, NULL, thread_routine, NULL);
-	printf("Main: Created first thread [%ld]\n", tid1);
-	// Creating the second thread that will also execute thread_routine.
-	pthread_create(&tid2, NULL, thread_routine, NULL);
-	printf("Main: Created second thread [%ld]\n", tid2);
-	// The main thread waits for the new threads to end
-	// with pthread_join.
-	pthread_join(tid1, NULL);
-	printf("Main: Joining first thread [%ld]\n", tid1);
-	pthread_join(tid2, NULL);
-	printf("Main: Joining second thread [%ld]\n", tid2);
-	return (0);
+	while (i < data -> number_of_philosophers)
+	{
+		data -> philo[i] -> id = i + 1; 
+		data -> philo[i] -> last_meal_time = 0;
+		data -> philo[i] -> meal_counter = 0;
+		data -> philo[i] -> data = data;
+		i++;
+		 
+	}
+	
+	
+	return(data);
+	
+}
+int	main(int argc, char **argv)
+{
+	t_data *data = malloc(sizeof(t_data));
+	
+	if (argc != 5 && argc != 6)
+		return(0);
+	data = init_data(argv, data, argc);
+	printf("go philo\n");
+
 }

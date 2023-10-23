@@ -5,6 +5,7 @@ CFLAGS = -Wall -Wextra -Werror -g3
 
 SRC =  \
 	philo.c \
+	utils.c \
 
 
 OBJ = $(SRC:.c=.o)
@@ -15,7 +16,7 @@ all : ${NAME}
 	printf '     Are you a thread?\n '
 	printf '    Because I cant wait\n '
 	printf '  to share my memory with u.\n '
-	printf '  🌷･.✧⁎ 🎧 🎀𓂃🦋⋆ ｡\n '
+	printf '     🌷･.✧⁎ 🎧 🎀𓂃🦋⋆ ｡\n '
 	printf '|＿＿＿＿＿＿＿＿＿＿＿＿＿＿|\n'
 	printf '        \\(•◡•) /\n'
 	printf '       	 \\    /\n'
@@ -23,7 +24,7 @@ all : ${NAME}
 
 ${NAME} : ${OBJ}
 	$(CC) $(OBJ) -o $(NAME)
-	printf '\033[32m[ ✔ ] %s\n\033[0m' "Philosophers are starting to do their unpayed duty lol "
+#printf '\033[32m[ ✔ ] %s\n\033[0m' "Philosophers are starting to do their unpayed duty."
 
 .o: .c
 	${CC} -c ${CFLAGS} $< -o $@
@@ -34,7 +35,7 @@ clean:
 	
 fclean: clean
 	rm -f $(NAME) 
-	printf '\033[32m[ ✔ ] %s\n\033[0m' "cleanclean all"
+#printf '\033[32m[ ✔ ] %s\n\033[0m' "cleanclean all"
 
 re: fclean all
 
