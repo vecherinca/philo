@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 20:57:26 by mklimina          #+#    #+#             */
-/*   Updated: 2023/10/23 23:44:52 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/10/24 20:26:46 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,36 @@ t_data *init_data(char **argv, t_data *data, int argc)
 	pthread_mutex_init(&data -> write_mutex, NULL);
 	pthread_mutex_init(&data -> meal_mutex, NULL);
 	pthread_mutex_init(&data -> check_end_mutex, NULL);
+	// init array of the mutexes forks
 	/*
 	PHILO init 
 	*/
 	data -> philo = malloc(sizeof(t_philo *) * data -> number_of_philosophers);
-
+	data -> forks = malloc(sizeof(pthread_mutex_t) * data -> number_of_philosophers);
+	while(i < data -> number_of_philosophers)
+	{
+		pthread_mutex_init(&data -> forks[i], NULL);
+		i++;
+	}
+	i = 0;
 	while (i < data -> number_of_philosophers)
 	{
 		data -> philo[i] -> id = i + 1; 
 		data -> philo[i] -> last_meal_time = 0;
 		data -> philo[i] -> meal_counter = 0;
 		data -> philo[i] -> data = data;
+		if (data -> philo[i] -> id  % 2)
+		{
+			data -> philo[i] ->fork_one = &data->forks[(i + 1) % data -> number_of_philosophers];
+			data -> philo[i] ->fork_two = &data->forks[i];
+		}
+		else
+		{
+			data -> philo[i] ->fork_one = &data->forks[i];
+			data -> philo[i] ->fork_two = &data->forks[(i + 1) % data -> number_of_philosophers];
+		}
 		i++;
+			
 		 
 	}
 	
