@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 19:17:22 by mklimina          #+#    #+#             */
-/*   Updated: 2023/10/24 20:17:14 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/10/26 21:50:00 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_philo
 	pthread_mutex_t	*fork_two;
 	int				last_meal_time;
 	int				meal_counter;
-	struct s_data			*data;
+	struct s_data			* data;
 	pthread_t		thread;
 
 }					t_philo;

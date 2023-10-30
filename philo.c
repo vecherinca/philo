@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 20:57:26 by mklimina          #+#    #+#             */
-/*   Updated: 2023/10/24 20:26:46 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/10/30 23:53:20 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ long int return_start_time(void)
 	gettimeofday(&tv, NULL);
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
+
 t_data *init_data(char **argv, t_data *data, int argc)
 {
 	int i;
@@ -82,11 +83,27 @@ t_data *init_data(char **argv, t_data *data, int argc)
 			
 		 
 	}
-	
-	
 	return(data);
-	
 }
+
+void *routine(void *philos)
+{
+	(void) philos;
+	printf("yo we are threading");
+	sleep(1);
+	return ((void *)0);
+}
+
+// int launch_threads()
+// {
+	
+// }
+
+// int monitoring()
+// {
+	
+// }
+
 int	main(int argc, char **argv)
 {
 	t_data *data = malloc(sizeof(t_data));
@@ -94,6 +111,23 @@ int	main(int argc, char **argv)
 	if (argc != 5 && argc != 6)
 		return(0);
 	data = init_data(argv, data, argc);
-	printf("go philo\n");
+	printf("go\n");
+	
+	int i;
+	i = 0;
 
-}
+	while (i < data ->number_of_philosophers)
+	{
+		if (pthread_create(&(data -> philo[i] -> thread), NULL, &thread_routine, &data -> philo[i]))
+			printf("ERROR THREAD CREATING\n");
+		i++;
+	}
+	i = 0;
+	while (i < data ->number_of_philosophers)
+	{
+		// do we put something instad of NULL? 
+		if (pthread_join(&(data -> philo[i] -> thread), NULL))
+			printf("ERROR THREAD CREATING\n");
+		i++;
+	}
+}                                                   
