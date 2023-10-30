@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 20:57:26 by mklimina          #+#    #+#             */
-/*   Updated: 2023/10/30 23:53:20 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/10/31 00:38:59 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ int	main(int argc, char **argv)
 
 	while (i < data ->number_of_philosophers)
 	{
-		if (pthread_create(&(data -> philo[i] -> thread), NULL, &thread_routine, &data -> philo[i]))
+		if (pthread_create(&(data->philo[i]->thread), NULL, &routine, &data -> philo[i]))
 			printf("ERROR THREAD CREATING\n");
 		i++;
 	}
@@ -126,7 +126,7 @@ int	main(int argc, char **argv)
 	while (i < data ->number_of_philosophers)
 	{
 		// do we put something instad of NULL? 
-		if (pthread_join(&(data -> philo[i] -> thread), NULL))
+		if (pthread_join((data -> philo[i] -> thread), NULL))
 			printf("ERROR THREAD CREATING\n");
 		i++;
 	}
