@@ -6,18 +6,26 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 19:17:22 by mklimina          #+#    #+#             */
-/*   Updated: 2023/10/26 21:50:00 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/10/31 21:42:20 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
-
 # include <pthread.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <sys/time.h>
 # include <unistd.h>
+# include <stdbool.h>
+# include <sys/time.h>
+# include <limits.h>
+# include "printf/ft_printf.h"
+
+#define TAKE_FORK "has taken a fork"
+#define EATING "is eating"
+#define SLEEPING "is sleeping"
+#define THINKING "is thinking"
+#define DEAD "is dead"
 
 struct s_data;
 
@@ -28,7 +36,7 @@ typedef struct s_philo
 	pthread_mutex_t	*fork_two;
 	int				last_meal_time;
 	int				meal_counter;
-	struct s_data			* data;
+	struct s_data			*data;
 	pthread_t		thread;
 
 }					t_philo;
@@ -43,7 +51,7 @@ typedef struct s_data
 	int				nb_must_eat;
 	int				all_ate;
 	int				phi_died;
-	t_philo			**philo;
+	t_philo			*philo;
 	pthread_mutex_t *forks;
 	pthread_mutex_t write_mutex;  //? is partie monitoring 
 	pthread_mutex_t meal_mutex; // partie monitoring
@@ -53,7 +61,7 @@ typedef struct s_data
 
 
 
-void				*thread_routine(void *data);
 int					ft_atoi(const char *str);
+
 
 #endif

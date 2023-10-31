@@ -1,42 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 21:03:33 by mklimina          #+#    #+#             */
-/*   Updated: 2023/10/31 19:36:06 by mklimina         ###   ########.fr       */
+/*   Created: 2022/11/13 18:20:16 by mklimina          #+#    #+#             */
+/*   Updated: 2022/12/03 00:17:11 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
-
-int	ft_atoi(const char *str)
+#include "ft_printf.h"
+/*
+Outputs the character ’c’ to the given file
+descriptor.
+*/
+int	ft_putchar_fd(char c)
 {
-	int	i;
-	int	sign;
-	int	result;
-
-	i = 0;
-	sign = 1;
-	result = 0;
-	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
-		i++;
-	if (str[i] == '-')
-	{
-		sign = -1 * sign;
-		i++;
-	}
-	else if (str[i] == '+')
-	{
-		i++;
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		result = result * 10 + str[i] - '0';
-		i++;
-	}
-	return (result * sign);
+	write(1, &c, 1);
+	return (1);
 }
-

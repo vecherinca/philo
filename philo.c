@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 20:57:26 by mklimina          #+#    #+#             */
-/*   Updated: 2023/10/31 00:38:59 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/10/31 22:39:34 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ t_data *init_data(char **argv, t_data *data, int argc)
 	/*
 	PHILO init 
 	*/
-	data -> philo = malloc(sizeof(t_philo *) * data -> number_of_philosophers);
+	data -> philo = malloc(sizeof(t_philo) * data -> number_of_philosophers);
 	data -> forks = malloc(sizeof(pthread_mutex_t) * data -> number_of_philosophers);
 	while(i < data -> number_of_philosophers)
 	{
@@ -65,19 +65,19 @@ t_data *init_data(char **argv, t_data *data, int argc)
 	i = 0;
 	while (i < data -> number_of_philosophers)
 	{
-		data -> philo[i] -> id = i + 1; 
-		data -> philo[i] -> last_meal_time = 0;
-		data -> philo[i] -> meal_counter = 0;
-		data -> philo[i] -> data = data;
-		if (data -> philo[i] -> id  % 2)
+		data -> philo[i].id= i + 1; 
+		data -> philo[i].last_meal_time = 0;
+		data -> philo[i].meal_counter = 0;
+		data -> philo[i].data = data;
+		if (data -> philo[i].id  % 2)
 		{
-			data -> philo[i] ->fork_one = &data->forks[(i + 1) % data -> number_of_philosophers];
-			data -> philo[i] ->fork_two = &data->forks[i];
+			data -> philo[i].fork_one = &data->forks[(i + 1) % data -> number_of_philosophers];
+			data -> philo[i].fork_two = &data->forks[i];
 		}
 		else
 		{
-			data -> philo[i] ->fork_one = &data->forks[i];
-			data -> philo[i] ->fork_two = &data->forks[(i + 1) % data -> number_of_philosophers];
+			data -> philo[i].fork_one = &data->forks[i];
+			data -> philo[i].fork_two = &data->forks[(i + 1) % data -> number_of_philosophers];
 		}
 		i++;
 			
@@ -86,18 +86,75 @@ t_data *init_data(char **argv, t_data *data, int argc)
 	return(data);
 }
 
-void *routine(void *philos)
+int print_message(t_philo		*philo, char *message)
 {
-	(void) philos;
-	printf("yo we are threading");
-	sleep(1);
-	return ((void *)0);
+	// CHECK IF NO ONE DIED
+	struct timeval	tv;
+	pthread_mutex_lock(&philo -> data ->write_mutex);
+	gettimeofday(&tv, NULL);
+	ft_printf("%u %d %s\n", return_start_time(), philo ->id, message);
+	pthread_mutex_unlock(&philo -> data ->write_mutex);
+	return(1);
 }
 
-// int launch_threads()
-// {
+int	ft_usleep(t_philo		*philo)
+{
+	long int	start;
+	// CHECK IF NO ONE DIED
+	start = return_start_time();
+	while ((return_start_time() - start) < philo ->data ->time_to_die)
+		usleep(philo -> data ->time_to_die / 10);
+	return (0);
+}
+
+int eat(t_philo		*philo)
+{
+	pthread_mutex_lock(philo ->fork_one);
+	print_message(philo, TAKE_FORK);
+	pthread_mutex_lock(philo ->fork_two);
+	print_message(philo, TAKE_FORK);
+	print_message(philo, EATING);
+	ft_usleep(philo);
+	philo ->last_meal_time = return_start_time();
+	pthread_mutex_lock(&philo -> data ->meal_mutex);
+	philo->meal_counter ++;
+	pthread_mutex_unlock(&philo -> data ->meal_mutex);
+	pthread_mutex_unlock(philo ->fork_two);
+	pthread_mutex_unlock(philo ->fork_one);
 	
-// }
+	return(1);
+	
+	
+}
+
+int sleep_philo(t_philo		*philo)
+{
+	print_message(philo, SLEEPING);
+	ft_usleep(philo);
+	return(1);
+}
+
+
+int to_think(t_philo		*philo)
+{
+	print_message(philo, THINKING);
+	ft_usleep(philo);
+	return(1);
+}
+
+void *routine(void *philos)
+{
+	t_philo		*philo;
+	philo = (t_philo *)philos;
+	while (1)
+	{
+		eat(philo);
+		sleep_philo(philo);
+		to_think(philo);
+		
+	}
+	return ((void *)0);
+}
 
 // int monitoring()
 // {
@@ -111,14 +168,14 @@ int	main(int argc, char **argv)
 	if (argc != 5 && argc != 6)
 		return(0);
 	data = init_data(argv, data, argc);
-	printf("go\n");
+
 	
 	int i;
 	i = 0;
 
 	while (i < data ->number_of_philosophers)
 	{
-		if (pthread_create(&(data->philo[i]->thread), NULL, &routine, &data -> philo[i]))
+		if (pthread_create(&(data-> philo[i].thread), NULL, &routine, &data -> philo[i]))
 			printf("ERROR THREAD CREATING\n");
 		i++;
 	}
@@ -126,8 +183,13 @@ int	main(int argc, char **argv)
 	while (i < data ->number_of_philosophers)
 	{
 		// do we put something instad of NULL? 
-		if (pthread_join((data -> philo[i] -> thread), NULL))
+		if (pthread_join((data -> philo[i].thread), NULL))
 			printf("ERROR THREAD CREATING\n");
 		i++;
+	}
+
+	while (1)
+	{
+		
 	}
 }                                                   

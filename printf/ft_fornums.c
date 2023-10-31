@@ -1,42 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_fornums.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 21:03:33 by mklimina          #+#    #+#             */
-/*   Updated: 2023/10/31 19:36:06 by mklimina         ###   ########.fr       */
+/*   Created: 2022/12/02 23:29:54 by mklimina          #+#    #+#             */
+/*   Updated: 2022/12/03 17:38:13 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "ft_printf.h"
 
-int	ft_atoi(const char *str)
+int	ft_fornums(char c, int num)
 {
-	int	i;
-	int	sign;
-	int	result;
+	char	*s;
+	int		p;
 
-	i = 0;
-	sign = 1;
-	result = 0;
-	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
-		i++;
-	if (str[i] == '-')
+	if (c == 'd')
 	{
-		sign = -1 * sign;
-		i++;
+		s = ft_itoa(num);
+		p = ft_putstr_fd(s);
+		free(s);
+		return (p);
 	}
-	else if (str[i] == '+')
+	if (c == 'u')
 	{
-		i++;
+		s = ft_itoa_unsign((unsigned)num);
+		p = ft_putstr_fd(s);
+		free(s);
+		return (p);
 	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		result = result * 10 + str[i] - '0';
-		i++;
-	}
-	return (result * sign);
+	return (0);
 }
-

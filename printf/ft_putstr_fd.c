@@ -1,42 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 21:03:33 by mklimina          #+#    #+#             */
-/*   Updated: 2023/10/31 19:36:06 by mklimina         ###   ########.fr       */
+/*   Created: 2022/11/13 18:23:03 by mklimina          #+#    #+#             */
+/*   Updated: 2022/12/03 17:50:02 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
-
-int	ft_atoi(const char *str)
+#include "ft_printf.h"
+/*
+Outputs the string ’s’ to the given file
+descriptor.
+*/
+int	ft_putstr_fd(char *s)
 {
 	int	i;
-	int	sign;
-	int	result;
+	int	count;
 
+	if (s == NULL)
+		return (ft_putstr_fd("(null)"));
+	count = 0;
+	if (!s)
+		return (0);
 	i = 0;
-	sign = 1;
-	result = 0;
-	while (str[i] == 32 || (str[i] >= 9 && str[i] <= 13))
-		i++;
-	if (str[i] == '-')
+	while (s[i] != '\0')
 	{
-		sign = -1 * sign;
+		write(1, &s[i], 1);
 		i++;
+		count++;
 	}
-	else if (str[i] == '+')
-	{
-		i++;
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		result = result * 10 + str[i] - '0';
-		i++;
-	}
-	return (result * sign);
+	return (count);
 }
-

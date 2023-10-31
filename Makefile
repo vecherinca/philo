@@ -6,24 +6,22 @@ CFLAGS = -Wall -Wextra -Werror -g3
 SRC =  \
 	philo.c \
 	utils.c \
+	printf/ft_printf.c \
+	
 
+PRINTF			=	libftprintf.a
 
 OBJ = $(SRC:.c=.o)
 .SILENT:
 
-all : ${NAME}
-	printf '|￣￣￣￣￣￣￣￣￣￣￣￣￣￣ |\n   '
-	printf '     Are you a thread?\n '
-	printf '    Because I cant wait\n '
-	printf '  to share my memory with u.\n '
-	printf '     🌷･.✧⁎ 🎧 🎀𓂃🦋⋆ ｡\n '
-	printf '|＿＿＿＿＿＿＿＿＿＿＿＿＿＿|\n'
-	printf '        \\(•◡•) /\n'
-	printf '       	 \\    /\n'
+all : ${NAME} 
+	./cringe.sh
 
 
 ${NAME} : ${OBJ}
-	$(CC) $(OBJ) -o $(NAME)
+	@make -C printf
+	@mv printf/libftprintf.a .
+	$(CC) $(OBJ) -o $(NAME)  ${PRINTF}
 #printf '\033[32m[ ✔ ] %s\n\033[0m' "Philosophers are starting to do their unpayed duty."
 
 .o: .c
@@ -31,9 +29,12 @@ ${NAME} : ${OBJ}
 
 clean: 
 	rm -f $(OBJ) 
-	printf '\033[32m[ ✔ ] %s\n\033[0m' "cleanclean"
+	make clean -C printf
+	printf '\033[32m[ ✔ ] %s\n\033[0m' "Cleaning objects"
 	
 fclean: clean
+	make fclean -C printf
+	rm -rf ${PRINTF}
 	rm -f $(NAME) 
 #printf '\033[32m[ ✔ ] %s\n\033[0m' "cleanclean all"
 
