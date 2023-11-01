@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 20:57:26 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/01 16:42:00 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/01 17:11:37 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@
 // 	return (NULL); // The thread ends here.
 // }
 
-long int	return_start_time(void)
+long int	return_start_time(t_data *data)
 {
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000 - data -> start_time);
 }
 
 t_data	*init_data(char **argv, t_data *data, int argc)
@@ -47,7 +47,7 @@ t_data	*init_data(char **argv, t_data *data, int argc)
 		data->nb_must_eat = ft_atoi(argv[5]);
 	else
 		data->nb_must_eat = -1;
-	data->start_time = return_start_time();
+	data->start_time = return_start_time(data);
 	data->all_ate = 0;
 	data->phi_died = 0;
 	pthread_mutex_init(&data->write_mutex, NULL);
@@ -101,7 +101,7 @@ int	print_message(t_philo *philo, char *message)
 	pthread_mutex_unlock(&philo->data->check_end_mutex);
 	gettimeofday(&tv, NULL);
 	pthread_mutex_lock(&philo->data->write_mutex);
-	ft_printf("%u %d %s\n", return_start_time(), philo->id, message);
+	ft_printf("%u %d %s\n", return_start_time(philo -> data), philo->id, message);
 	pthread_mutex_unlock(&philo->data->write_mutex);
 	return (1);
 }
@@ -111,13 +111,11 @@ int	ft_usleep(t_philo *philo)
 	long int	start;
 
 	// CHECK IF NO ONE DIED
-	start = return_start_time();
-	while ((return_start_time() - start) < philo->data->time_to_die)
+	start = return_start_time(philo -> data);
+	while ((return_start_time(philo -> data) - start) < philo->data->time_to_die)
 	{
 		pthread_mutex_lock(&philo->data->check_end_mutex);
-		if (philo->data->all_ate == 1)
-			return (pthread_mutex_unlock(&philo->data->check_end_mutex), 0);
-		if (philo->data->phi_died == 1)
+		if (philo->data->all_ate == 1 || philo->data->phi_died == 1)
 			return (pthread_mutex_unlock(&philo->data->check_end_mutex), 0);
 		pthread_mutex_unlock(&philo->data->check_end_mutex);
 		usleep(philo->data->time_to_die / 10);
@@ -141,9 +139,7 @@ int	eat(t_philo *philo)
 		return (pthread_mutex_unlock(philo->fork_two),
 			pthread_mutex_unlock(philo->fork_one), 0);
 	pthread_mutex_lock(&philo->data->meal_mutex);
-	philo->last_meal_time = return_start_time();
-	printf(
-		"LAST TIME %ld\n", philo->last_meal_time);
+	philo->last_meal_time = return_start_time(philo -> data);
 	philo->meal_counter++;
 	pthread_mutex_unlock(&philo->data->meal_mutex);
 	pthread_mutex_unlock(philo->fork_two);
@@ -218,7 +214,7 @@ int	monitoring(t_philo *philo)
 		while (j < philo->data->number_of_philosophers)
 		{
 			pthread_mutex_lock(&philo->data->meal_mutex);
-			if (return_start_time()
+			if (return_start_time(philo -> data)
 				- philo[i].last_meal_time > philo->data->time_to_die)
 			{
 				printf(
