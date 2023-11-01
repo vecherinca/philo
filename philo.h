@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 19:17:22 by mklimina          #+#    #+#             */
-/*   Updated: 2023/10/31 21:42:20 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/01 15:34:09 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ typedef struct s_philo
 	int				id;
 	pthread_mutex_t	*fork_one; 
 	pthread_mutex_t	*fork_two;
-	int				last_meal_time;
+	long int				last_meal_time;
 	int				meal_counter;
 	struct s_data			*data;
 	pthread_t		thread;
@@ -45,8 +45,8 @@ typedef struct s_data
 {
 	long int		start_time;
 	int				number_of_philosophers;
-	int				time_to_eat;
-	int				time_to_die;
+	long int				time_to_eat;
+	long int				time_to_die;
 	int				time_to_sleep;
 	int				nb_must_eat;
 	int				all_ate;
