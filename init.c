@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 20:54:48 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/02 21:30:17 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/02 23:51:25 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,31 +58,39 @@ t_data	*mutex_init(t_data *data)
 	return (data);
 }
 
-void	init_philo(t_data *data)
+t_data	*init_philo(t_data *data)
 {
 	int	i;
 
 	i = 0;
 	while (i < data->number_of_philosophers)
 	{
+
 		data->philo[i].id = i + 1;
 		data->philo[i].last_meal_time = 0;
 		data->philo[i].meal_counter = 0;
 		data->philo[i].data = data;
-		if (data->philo[i].id % 2)
+		i++;
+	}
+	i = 0;
+	while  (i < data ->number_of_philosophers)
+	{
+		if (i % 2 != 0)
 		{
-			data->philo[i].fork_one = &data->forks[(i + 1)
-				% data->number_of_philosophers];
+			printf("philo id : %d fork 1 index : %d; fork 2 index : %d\n", data -> philo[i].id, ((i + 1) % data->number_of_philosophers), i);
+			data->philo[i].fork_one = &data->forks[(i + 1) % data->number_of_philosophers];
 			data->philo[i].fork_two = &data->forks[i];
 		}
 		else
 		{
+			printf("philo id : %d fork 1 index : %d; fork 2 index : %d\n", data -> philo[i].id, i, ((i + 1) % data->number_of_philosophers));
 			data->philo[i].fork_one = &data->forks[i];
 			data->philo[i].fork_two = &data->forks[(i + 1)
 				% data->number_of_philosophers];
 		}
 		i++;
 	}
+	return (data);
 }
 
 t_data	*init_data(char **argv, t_data *data, int argc)
@@ -93,6 +101,6 @@ t_data	*init_data(char **argv, t_data *data, int argc)
 	data = mutex_init(data);
 	if (!data)
 		return (NULL);
-	init_philo(data);
+	data = init_philo(data);
 	return (data);
 }

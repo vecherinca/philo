@@ -6,11 +6,12 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 20:58:15 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/02 20:58:27 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/02 21:48:12 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
 int	monitoring(t_philo *philo)
 {
 	int	i;

@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 20:58:51 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/02 21:17:53 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/02 21:36:40 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ int	eat(t_philo *philo)
 				pthread_mutex_unlock(philo->fork_one), \
 				0);
 	pthread_mutex_lock(&philo->data->meal_mutex);
-	philo->last_meal_time = actual_time();
 	philo->meal_counter++;
+	philo->last_meal_time = actual_time();
 	pthread_mutex_unlock(&philo->data->meal_mutex);
 	pthread_mutex_unlock(philo->fork_two);
 	pthread_mutex_unlock(philo->fork_one);
