@@ -1,7 +1,7 @@
 NAME = philo
-CC = gcc
+CC = cc
 
-CFLAGS = -Wall -Wextra -Werror -fsanitize=thread 
+CFLAGS = -Wall -Wextra  -Werror 
 
 
 SRC =  \
@@ -22,7 +22,7 @@ all : ${NAME}
 ${NAME} : ${OBJ}
 	@make -C printf
 	@mv printf/libftprintf.a .
-	$(CC) $(OBJ) -o $(NAME)  ${PRINTF} -ltsan
+	$(CC) $(OBJ) -o $(NAME)  ${PRINTF} 
 #printf '\033[32m[ ✔ ] %s\n\033[0m' "Philosophers are starting to do their unpayed duty."
 
 .o: .c

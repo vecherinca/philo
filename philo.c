@@ -6,11 +6,13 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 20:57:26 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/01 17:11:37 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/02 20:06:46 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+long int	actual_time(void);
 
 // thread_routine is the function the thread invokes right after its
 // creation. The thread ends at the end of this function.
@@ -31,7 +33,7 @@ long int	return_start_time(t_data *data)
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000 + tv.tv_usec / 1000 - data -> start_time);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000 - data->start_time);
 }
 
 t_data	*init_data(char **argv, t_data *data, int argc)
@@ -43,11 +45,19 @@ t_data	*init_data(char **argv, t_data *data, int argc)
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
-	if (argc == 6 && ft_atoi(argv[5]) >= 0)
+	if (argc == 6)
+	{
 		data->nb_must_eat = ft_atoi(argv[5]);
+		if (data -> nb_must_eat <= 0)
+			return(free(data), NULL);
+	}
 	else
 		data->nb_must_eat = -1;
-	data->start_time = return_start_time(data);
+		
+	if (data->number_of_philosophers <= 0 || data->time_to_die <= 0 \
+		|| data->time_to_eat <= 0 || data->time_to_sleep <= 0)
+		return (free(data),NULL);
+	data->start_time = actual_time();
 	data->all_ate = 0;
 	data->phi_died = 0;
 	pthread_mutex_init(&data->write_mutex, NULL);
@@ -101,24 +111,36 @@ int	print_message(t_philo *philo, char *message)
 	pthread_mutex_unlock(&philo->data->check_end_mutex);
 	gettimeofday(&tv, NULL);
 	pthread_mutex_lock(&philo->data->write_mutex);
-	ft_printf("%u %d %s\n", return_start_time(philo -> data), philo->id, message);
+	ft_printf("%u %d %s\n", return_start_time(philo->data), philo->id, message);
 	pthread_mutex_unlock(&philo->data->write_mutex);
 	return (1);
 }
 
-int	ft_usleep(t_philo *philo)
+long int	actual_time(void)
+{
+	long int		time;
+	struct timeval	current_time;
+
+	time = 0;
+	gettimeofday(&current_time, NULL);
+	time = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+	return (time);
+}
+
+int	ft_usleep(t_philo *philo, long int time)
 {
 	long int	start;
 
-	// CHECK IF NO ONE DIED
-	start = return_start_time(philo -> data);
-	while ((return_start_time(philo -> data) - start) < philo->data->time_to_die)
+	start = return_start_time(philo->data);
+	while ((return_start_time(philo->data) - start) < time)
 	{
 		pthread_mutex_lock(&philo->data->check_end_mutex);
 		if (philo->data->all_ate == 1 || philo->data->phi_died == 1)
+		{
 			return (pthread_mutex_unlock(&philo->data->check_end_mutex), 0);
+		}
 		pthread_mutex_unlock(&philo->data->check_end_mutex);
-		usleep(philo->data->time_to_die / 10);
+		usleep(time / 10);
 	}
 	return (1);
 }
@@ -126,20 +148,24 @@ int	ft_usleep(t_philo *philo)
 int	eat(t_philo *philo)
 {
 	pthread_mutex_lock(philo->fork_one);
-	if (print_message(philo, TAKE_FORK) == 0)
+	if (print_message(philo, TAKE_FORK) == 0
+		|| philo->data->number_of_philosophers == 1)
 		return (pthread_mutex_unlock(philo->fork_one), 0);
 	pthread_mutex_lock(philo->fork_two);
 	if (print_message(philo, TAKE_FORK) == 0)
 		return (pthread_mutex_unlock(philo->fork_two),
-			pthread_mutex_unlock(philo->fork_one), 0);
+				pthread_mutex_unlock(philo->fork_one),
+				0);
 	if (print_message(philo, EATING) == 0)
 		return (pthread_mutex_unlock(philo->fork_two),
-			pthread_mutex_unlock(philo->fork_one), 0);
-	if (ft_usleep(philo) == 0)
+				pthread_mutex_unlock(philo->fork_one),
+				0);
+	if (ft_usleep(philo, philo->data->time_to_eat) == 0)
 		return (pthread_mutex_unlock(philo->fork_two),
-			pthread_mutex_unlock(philo->fork_one), 0);
+				pthread_mutex_unlock(philo->fork_one),
+				0);
 	pthread_mutex_lock(&philo->data->meal_mutex);
-	philo->last_meal_time = return_start_time(philo -> data);
+	philo->last_meal_time = actual_time();
 	philo->meal_counter++;
 	pthread_mutex_unlock(&philo->data->meal_mutex);
 	pthread_mutex_unlock(philo->fork_two);
@@ -151,7 +177,7 @@ int	sleep_philo(t_philo *philo)
 {
 	if (print_message(philo, SLEEPING) == 0)
 		return (0);
-	if (ft_usleep(philo) == 0)
+	if (ft_usleep(philo, philo->data->time_to_sleep) == 0)
 		return (0);
 	return (1);
 }
@@ -159,8 +185,6 @@ int	sleep_philo(t_philo *philo)
 int	to_think(t_philo *philo)
 {
 	if (print_message(philo, THINKING) == 0)
-		return (0);
-	if (ft_usleep(philo) == 0)
 		return (0);
 	return (1);
 }
@@ -210,15 +234,13 @@ int	monitoring(t_philo *philo)
 				return (0);
 			}
 		}
-		j = 0;
-		while (j < philo->data->number_of_philosophers)
+		j = -1;
+		while (++j < philo->data->number_of_philosophers)
 		{
 			pthread_mutex_lock(&philo->data->meal_mutex);
-			if (return_start_time(philo -> data)
-				- philo[i].last_meal_time > philo->data->time_to_die)
+			if (return_start_time(philo->data)
+				- philo[j].last_meal_time > philo->data->time_to_die)
 			{
-				printf(
-					"LAST TIME %ld\n", philo[j].last_meal_time);
 				pthread_mutex_unlock(&philo->data->meal_mutex);
 				print_message(philo, DEAD);
 				pthread_mutex_lock(&philo->data->check_end_mutex);
@@ -227,7 +249,6 @@ int	monitoring(t_philo *philo)
 				return (0);
 			}
 			pthread_mutex_unlock(&philo->data->meal_mutex);
-			j++;
 		}
 		usleep(100);
 	}
@@ -240,7 +261,11 @@ int	main(int argc, char **argv)
 	if (argc != 5 && argc != 6)
 		return (0);
 	data = init_data(argv, data, argc);
-
+	if (!data)
+	{	
+		ft_printf("Parsing error");
+		return(0);
+	}
 	int i;
 	i = 0;
 
@@ -251,9 +276,9 @@ int	main(int argc, char **argv)
 			printf("ERROR THREAD CREATING\n");
 		i++;
 	}
-	monitoring(data->philo);
 	i = 0;
 
+	monitoring(data->philo);
 	while (i < data->number_of_philosophers)
 	{
 		// do we put something instad of NULL?
@@ -261,4 +286,15 @@ int	main(int argc, char **argv)
 			printf("ERROR THREAD CREATING\n");
 		i++;
 	}
+	i = 0;	
+	 while (i < data->number_of_philosophers) {
+        pthread_mutex_destroy(&data->forks[i]);
+        i++;
+    }
+    pthread_mutex_destroy(&data->write_mutex);
+    pthread_mutex_destroy(&data->meal_mutex);
+    pthread_mutex_destroy(&data->check_end_mutex);
+    free(data->forks);
+    free(data->philo);
+    free(data);
 }
