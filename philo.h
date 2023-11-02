@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 19:17:22 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/01 15:34:09 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/02 20:19:43 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include <stdbool.h>
 # include <sys/time.h>
 # include <limits.h>
-# include "printf/ft_printf.h"
 
 #define TAKE_FORK "has taken a fork"
 #define EATING "is eating"

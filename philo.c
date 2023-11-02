@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 20:57:26 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/02 20:06:46 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/02 20:22:11 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int	print_message(t_philo *philo, char *message)
 	pthread_mutex_unlock(&philo->data->check_end_mutex);
 	gettimeofday(&tv, NULL);
 	pthread_mutex_lock(&philo->data->write_mutex);
-	ft_printf("%u %d %s\n", return_start_time(philo->data), philo->id, message);
+	printf("%lu %d %s\n", return_start_time(philo->data), philo->id, message);
 	pthread_mutex_unlock(&philo->data->write_mutex);
 	return (1);
 }
@@ -263,7 +263,7 @@ int	main(int argc, char **argv)
 	data = init_data(argv, data, argc);
 	if (!data)
 	{	
-		ft_printf("Parsing error");
+		printf("Parsing error");
 		return(0);
 	}
 	int i;

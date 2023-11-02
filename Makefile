@@ -1,44 +1,33 @@
-NAME = philo
-CC = cc
+CC            = gcc
+CFLAGS        = -Wextra -Wall -Werror -g3 -pthread -fsanitize=thread
+NAME        = philo
 
-CFLAGS = -Wall -Wextra  -Werror 
+OBJ_PATH     = obj/
 
+SRC            = philo.c \
+            utils.c
 
-SRC =  \
-	philo.c \
-	utils.c \
-	printf/ft_printf.c \
-	
+OBJ        = $(SRC:.c=.o)
+OBJS    = $(addprefix $(OBJ_PATH), $(OBJ))
 
-PRINTF			=	libftprintf.a
-
-OBJ = $(SRC:.c=.o)
-.SILENT:
-
-all : ${NAME} 
+all: $(OBJ_PATH) $(NAME)
 	./cringe.sh
+.SILENT:
+$(OBJ_PATH)%.o: %.c philo.h
+	$(CC) $(CFLAGS) -c $< -o $@
 
+$(OBJ_PATH):
+	mkdir $(OBJ_PATH)
 
-${NAME} : ${OBJ}
-	@make -C printf
-	@mv printf/libftprintf.a .
-	$(CC) $(OBJ) -o $(NAME)  ${PRINTF} 
-#printf '\033[32m[ ✔ ] %s\n\033[0m' "Philosophers are starting to do their unpayed duty."
+$(NAME): $(LIBFT) $(OBJ_PATH) $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-.o: .c
-	${CC} -c ${CFLAGS} $< -o $@
+clean:
+	rm -rf $(OBJ_PATH)
 
-clean: 
-	rm -f $(OBJ) 
-	make clean -C printf
-	printf '\033[32m[ ✔ ] %s\n\033[0m' "Cleaning objects"
-	
 fclean: clean
-	make fclean -C printf
-	rm -rf ${PRINTF}
-	rm -f $(NAME) 
-#printf '\033[32m[ ✔ ] %s\n\033[0m' "cleanclean all"
+	rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re all
+.PHONY: all clean fclean re
