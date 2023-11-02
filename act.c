@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 20:58:51 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/02 21:15:31 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/02 21:17:53 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,16 @@ int	eat(t_philo *philo)
 		return (pthread_mutex_unlock(philo->fork_one), 0);
 	pthread_mutex_lock(philo->fork_two);
 	if (print_message(philo, TAKE_FORK) == 0)
-		return (pthread_mutex_unlock(philo->fork_two),
-				pthread_mutex_unlock(philo->fork_one),
+		return (pthread_mutex_unlock(philo->fork_two), \
+				pthread_mutex_unlock(philo->fork_one), \
 				0);
 	if (print_message(philo, EATING) == 0)
-		return (pthread_mutex_unlock(philo->fork_two),
-				pthread_mutex_unlock(philo->fork_one),
+		return (pthread_mutex_unlock(philo->fork_two), \
+				pthread_mutex_unlock(philo->fork_one), \
 				0);
 	if (ft_usleep(philo, philo->data->time_to_eat) == 0)
-		return (pthread_mutex_unlock(philo->fork_two),
-				pthread_mutex_unlock(philo->fork_one),
+		return (pthread_mutex_unlock(philo->fork_two), \
+				pthread_mutex_unlock(philo->fork_one), \
 				0);
 	pthread_mutex_lock(&philo->data->meal_mutex);
 	philo->last_meal_time = actual_time();

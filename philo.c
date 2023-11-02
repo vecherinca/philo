@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 20:57:26 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/02 21:15:01 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/02 21:29:09 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	free_everything(t_data *data)
 	free(data->philo);
 	free(data);
 }
+
 void	threading(t_data *data)
 {
 	int	i;
@@ -83,7 +84,7 @@ void	joining(t_data *data)
 
 int	main(int argc, char **argv)
 {
-	t_data *data;
+	t_data	*data;
 
 	if (argc != 5 && argc != 6)
 		return (0);
@@ -94,7 +95,6 @@ int	main(int argc, char **argv)
 		printf("Parsing error: Check the arguments, something is wrong ;)");
 		return (0);
 	}
-
 	threading(data);
 	monitoring(data->philo);
 	joining(data);
