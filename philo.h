@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 19:17:22 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/02 20:19:43 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/02 21:01:56 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,13 @@ typedef struct s_data
 
 
 int					ft_atoi(const char *str);
-
-
+long int	actual_time(void);
+long int	return_start_time(t_data *data);
+t_data	*init_data(char **argv, t_data *data, int argc);
+int	eat(t_philo *philo);
+int	sleep_philo(t_philo *philo);
+int	to_think(t_philo *philo);
+int	monitoring(t_philo *philo);
+int	print_message(t_philo *philo, char *message);
+int	ft_usleep(t_philo *philo, long int time);
 #endif

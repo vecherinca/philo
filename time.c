@@ -1,22 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
+/*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/13 18:20:16 by mklimina          #+#    #+#             */
-/*   Updated: 2022/12/03 00:17:11 by mklimina         ###   ########.fr       */
+/*   Created: 2023/11/02 20:52:59 by mklimina          #+#    #+#             */
+/*   Updated: 2023/11/02 20:54:08 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
-/*
-Outputs the character ’c’ to the given file
-descriptor.
-*/
-int	ft_putchar_fd(char c)
+
+#include "philo.h"
+
+long int	return_start_time(t_data *data)
 {
-	write(1, &c, 1);
-	return (1);
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000 - data->start_time);
+}
+
+long int	actual_time(void)
+{
+	long int		time;
+	struct timeval	current_time;
+
+	time = 0;
+	gettimeofday(&current_time, NULL);
+	time = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+	return (time);
 }

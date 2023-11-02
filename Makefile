@@ -1,11 +1,15 @@
 CC            = gcc
-CFLAGS        = -Wextra -Wall -Werror -g3 -pthread -fsanitize=thread
+CFLAGS        = -Wextra -Wall -Werror -g3 #-pthread -fsanitize=thread
 NAME        = philo
 
 OBJ_PATH     = obj/
 
 SRC            = philo.c \
-            utils.c
+            utils.c \
+			time.c \
+			init.c \
+			monitor.c \
+			act.c 
 
 OBJ        = $(SRC:.c=.o)
 OBJS    = $(addprefix $(OBJ_PATH), $(OBJ))
