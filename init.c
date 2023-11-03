@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 20:54:48 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/02 23:51:25 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/03 00:46:15 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,13 +77,11 @@ t_data	*init_philo(t_data *data)
 	{
 		if (i % 2 != 0)
 		{
-			printf("philo id : %d fork 1 index : %d; fork 2 index : %d\n", data -> philo[i].id, ((i + 1) % data->number_of_philosophers), i);
 			data->philo[i].fork_one = &data->forks[(i + 1) % data->number_of_philosophers];
 			data->philo[i].fork_two = &data->forks[i];
 		}
 		else
 		{
-			printf("philo id : %d fork 1 index : %d; fork 2 index : %d\n", data -> philo[i].id, i, ((i + 1) % data->number_of_philosophers));
 			data->philo[i].fork_one = &data->forks[i];
 			data->philo[i].fork_two = &data->forks[(i + 1)
 				% data->number_of_philosophers];
