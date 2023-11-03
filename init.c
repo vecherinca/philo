@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 20:54:48 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/03 00:46:15 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/03 19:15:44 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,23 @@ t_data	*init_general_info(char **argv, t_data *data, int argc)
 	data->start_time = actual_time();
 	data->all_ate = 0;
 	data->phi_died = 0;
+	data = init_mallocs(data);
+	if (!data)
+		return (NULL);
+	return (data);
+}
+
+t_data	*init_mutex(t_data *data)
+{
+	if (pthread_mutex_init(&data->write_mutex, NULL))
+		return (free(data), NULL);
+	if (pthread_mutex_init(&data->meal_mutex, NULL))
+		return (pthread_mutex_destroy(&data->write_mutex), free(data), NULL);
+	if (pthread_mutex_init(&data->check_end_mutex, NULL))
+		return (pthread_mutex_destroy(&data->write_mutex),
+			pthread_mutex_destroy(&data->meal_mutex),
+			free(data),
+			NULL);
 	return (data);
 }
 
@@ -40,19 +57,24 @@ t_data	*mutex_init(t_data *data)
 	int	i;
 
 	i = 0;
-	pthread_mutex_init(&data->write_mutex, NULL);
-	pthread_mutex_init(&data->meal_mutex, NULL);
-	pthread_mutex_init(&data->check_end_mutex, NULL);
-	data->philo = malloc(sizeof(t_philo) * data->number_of_philosophers);
-	if (!data->philo)
+	data = init_mutex(data);
+	if (!data)
 		return (NULL);
-	data->forks = malloc(sizeof(pthread_mutex_t)
-			* data->number_of_philosophers);
-	if (!data->forks)
-		return (free(data->philo), NULL);
 	while (i < data->number_of_philosophers)
 	{
-		pthread_mutex_init(&data->forks[i], NULL);
+		if (pthread_mutex_init(&data->forks[i], NULL))
+		{
+			while (--i >= 0)
+			{
+				pthread_mutex_destroy(&data->forks[i]);
+			}
+			pthread_mutex_destroy(&data->write_mutex);
+			pthread_mutex_destroy(&data->meal_mutex);
+			pthread_mutex_destroy(&data->check_end_mutex);
+			free(data->philo);
+			free(data->forks);
+			free(data);
+		}
 		i++;
 	}
 	return (data);
@@ -65,19 +87,14 @@ t_data	*init_philo(t_data *data)
 	i = 0;
 	while (i < data->number_of_philosophers)
 	{
-
 		data->philo[i].id = i + 1;
 		data->philo[i].last_meal_time = 0;
 		data->philo[i].meal_counter = 0;
 		data->philo[i].data = data;
-		i++;
-	}
-	i = 0;
-	while  (i < data ->number_of_philosophers)
-	{
 		if (i % 2 != 0)
 		{
-			data->philo[i].fork_one = &data->forks[(i + 1) % data->number_of_philosophers];
+			data->philo[i].fork_one = &data->forks[(i + 1)
+				% data->number_of_philosophers];
 			data->philo[i].fork_two = &data->forks[i];
 		}
 		else

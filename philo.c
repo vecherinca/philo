@@ -6,7 +6,7 @@
 /*   By: mklimina <mklimina@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 20:57:26 by mklimina          #+#    #+#             */
-/*   Updated: 2023/11/03 00:36:10 by mklimina         ###   ########.fr       */
+/*   Updated: 2023/11/03 18:46:51 by mklimina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ void	*routine(void *philos)
 	philo = (t_philo *)philos;
 	if (!(philo->id % 2))
 		ft_usleep(philo, philo->data->time_to_eat / 2);
-	if ((philo->data->number_of_philosophers % 2) && (philo->id == 1))
-		ft_usleep(philo, philo->data->time_to_eat + (philo->data->time_to_sleep / 10));
 	while (1)
 	{
 		if (eat(philo) == 0)
@@ -29,6 +27,9 @@ void	*routine(void *philos)
 			return ((void *)0);
 		if (to_think(philo) == 0)
 			return ((void *)0);
+		if (philo->data->number_of_philosophers % 2)
+			ft_usleep(philo, philo->data->time_to_die
+				- (philo->data->time_to_eat + philo->data->time_to_sleep));
 	}
 	return ((void *)1);
 }

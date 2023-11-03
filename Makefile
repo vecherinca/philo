@@ -1,5 +1,5 @@
 CC            = gcc
-CFLAGS        = -Wextra -Wall -Werror -g3 #-pthread -fsanitize=thread
+CFLAGS        = -Wextra -Wall -Werror -g3 -pthread #-fsanitize=thread
 NAME        = philo
 
 OBJ_PATH     = obj/
@@ -15,8 +15,7 @@ OBJ        = $(SRC:.c=.o)
 OBJS    = $(addprefix $(OBJ_PATH), $(OBJ))
 
 all: $(OBJ_PATH) $(NAME)
-	./cringe.sh
-.SILENT:
+
 $(OBJ_PATH)%.o: %.c philo.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
